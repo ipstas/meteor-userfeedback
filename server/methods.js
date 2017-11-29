@@ -13,10 +13,11 @@ Meteor.methods({
 	},
 	'feedback.vote'(params) {
 		if (!this.userId) return console.warn('empty vote', this);
+		var voted = _userFeedbackCol.findOne(params._id).votes.length;
 		if (_userFeedbackCol.findOne({_id: params._id, votes: this.userId}))
-			_userFeedbackCol.update(params._id,{$pull:{votes: this.userId}});
+			_userFeedbackCol.update(params._id,{$set: {voted: voted - 1}, $pull:{votes: this.userId}} );
 		else
-			_userFeedbackCol.update(params._id,{$addToSet:{votes: this.userId}});
+			_userFeedbackCol.update(params._id,{$set: {voted: voted + 1}, $addToSet:{votes: this.userId}});
 	},
 	'feedback.status'(params) {
 		

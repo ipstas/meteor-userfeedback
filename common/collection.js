@@ -56,6 +56,16 @@ export const _userFeedbackSchema = new SimpleSchema({
     type: String,
 		optional: true,
   },
+	voted:{
+		type: Number,
+		optional: true,
+    autoform: {
+			omit: true,
+      afFieldInput: {
+        type: 'hidden'
+      }
+		}
+	},
 	comments: {
     type: Array,
 		optional: true,

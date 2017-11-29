@@ -33,6 +33,14 @@
 	padding-bottom: 40px;
 }
 
+.xlUserFeedback .sideblock{
+	background-color: #fff;
+	border: 1px solid #e3e3e3;
+	padding: 30px;
+	margin: 10px;
+	position: relative;
+}
+
 .feature-stats__vote-count {
 	height: 46px;
 	width: 46px;
@@ -67,7 +75,7 @@
 .xlComment:first-child {
 	border-top: 1px solid #e3e3e3;
 }
-.xlCommentAuthor {
+.xlAuthor {
 	font-family: Raleway,sans-serif;
 	font-weight: 600;
 	margin-right: 15px;
