@@ -1,0 +1,27 @@
+<template name="_addNewRequestModal">
+	<div class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h4 class="modal-title">Add a Request</h4>
+				</div>
+
+				{{#autoForm id="requestForm" template="bootstrap3" schema=schema collection=collection type="insert" }}
+					{{#each afFieldNames}}
+						{{debug}}
+<!-- 						{{> afQuickField name=this.name options=afOptionsFromSchema}} -->
+					{{/each}}
+				{{/autoForm}}
+				
+<!-- 				{{>quickForm id="requestForm" template="bootstrap3" collection=collection schema=schema type="insert" }} -->
+<!-- 				{{>quickForm id="requestForm" template="bootstrap3" schema=schema type="insert" }} -->
+
+				<div class="modal-footer text-center">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Dismiss</button> 
+				</div>
+
+			</div>
+		</div>
+	</div>
+</template>
