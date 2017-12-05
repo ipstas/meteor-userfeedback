@@ -1,4 +1,5 @@
 import SimpleSchema  from 'simpl-schema';
+import moment  from 'moment';
 import { AutoForm } from 'meteor/aldeed:autoform';
 
 import '../common/collection.js';
@@ -11,7 +12,7 @@ import {hooksDefault} from '../common/hooks.js';
 
 window._userFeedbackCol = _userFeedbackCol;
 
-AutoForm.addHooks('requestForm', hooksDefault);
+AutoForm.addHooks('_requestForm', hooksDefault);
 
 Template._userFeedback.onCreated( () => {
 	let t = Template.instance();
@@ -29,6 +30,9 @@ Template._userFeedback.events({
 		//t.request.set('new');
 		FlowRouter.setQueryParams({request: 'new'});
 	},
+	'click .signIn'(e,t){
+		
+	}
 });
 
 Template._userListFeed.onCreated( () => {
@@ -515,8 +519,9 @@ Template._userRequest.events({
 		t.recordId.set(this._id);
 	},			
 	'click .xlVote' (e,t){
-		console.log('click xlVote', this);
-	},		
+		//console.log('click xlVote', this);
+		Meteor.call('feedback.vote',{_id: this._id});
+	},
 	'click .xlDelete' (e,t){
 		_userFeedbackCol.remove(this._id);
 	},	

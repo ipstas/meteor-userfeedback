@@ -22,5 +22,7 @@ FlowRouter.route('/feedback', {
 ```
 
 ```html
-<a class="{{isActiveRoute 'feedback'}}" href="/feedback"><i class="fa fa-commenting-o" aria-hidden="true"></i> Requests</a>
+<a class="{{isActiveRoute 'feedback'}}" href="/feedback">
+	<i class="fa fa-commenting-o" aria-hidden="true"></i> Requests
+</a>
 ```

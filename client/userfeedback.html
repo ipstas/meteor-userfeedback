@@ -67,16 +67,13 @@
 		<div class="row text-left">
 			{{#unless $eq recordId _id}}
 				<div class="col-xs-2 fontlarge">
-
-					<div class=" col-xs-2">
-						<div class="h3"> </div>
-						<div class="pointer xlVote feature-stats__vote-count {{myvoted}}">
-							{{#unless $eq hoverOver _id}}
-								{{voted}}
-							{{else}}
-								<i class="fa fa-thumbs-up animated fadeIn" aria-hidden="true"></i>
-							{{/unless}}
-						</div>
+					<div class="h3"> </div>
+					<div class="pointer xlVote feature-stats__vote-count {{myvoted}}">
+						{{#unless $eq hoverOver _id}}
+							{{voted}}
+						{{else}}
+							<i class="fa fa-thumbs-up animated fadeIn" aria-hidden="true"></i>
+						{{/unless}}
 					</div>
 				</div>
 				<div class="col-xs-10">
@@ -272,15 +269,20 @@
 
 <template name="_addNewRequest">
 
-	<div class="row banner margin-top-50 text-center">
+	<div class="row   text-center">
 		<div class="col-sm-offset-2 col-sm-8 col-xs-12">
-			<div class="row banner margin-top-50 text-center">
+			<div class="row   text-center">
 				<div class="col-xs-12">
 					<h1 class="text-center">Add a Request</h1>
 				</div>
 
 				<div class="col-xs-12 ">
-					{{>quickForm id="requestForm" template="bootstrap3" doc=doc schema=schema collection=collection type="insert" }}
+					{{#if currentUser}}
+						{{>quickForm id="_requestForm" template="bootstrap3" doc=doc schema=schema collection=collection type="insert" }}
+					{{else}}
+						<!-- <div class="signIn">Sign in to add a request</div> -->
+						{{> atForm}}
+					{{/if}}
 				</div>
 			</div>
 		</div>

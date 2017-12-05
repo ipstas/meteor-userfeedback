@@ -10,7 +10,7 @@ export const _userFeedbackCol = new Mongo.Collection('_userfeedback');
 export const _userFeedbackSchema = new SimpleSchema({
 	title: {
     type: String,
-		max: 127,
+		max: 40,
   },  
 	titleUniq: {
     type: String,
@@ -23,8 +23,9 @@ export const _userFeedbackSchema = new SimpleSchema({
   },
 	text: {
     type: String,
-		min: 100,
+		min: 30,
 		autoform: {
+			placeholder: 'min length 30 characters',
 			rows: 3,
 		},
   },  
@@ -139,17 +140,18 @@ export const _userFeedbackSchema = new SimpleSchema({
 
 });
 //Collections._userFeedbackCol.attachSchema(Schemas._userFeedbackCol);
-/* _userFeedbackCol.allow({
-  insert: function () {
-		if (Roles.userIsInRole(this.userId, ['admin'], 'adm-group')) 
+_userFeedbackCol.allow({
+  insert: function (userId, doc) {
+		console.log('inserting feedback', this.userId, doc);
+		if (Roles.userIsInRole(this.userId, ['admin'], 'adm-group') || (userId && doc.userId === userId))
 			return true;
   },
-  update: function () {
-		if (Roles.userIsInRole(this.userId, ['admin'], 'adm-group')) 
+  update: function (userId) {
+		if (Roles.userIsInRole(userId, ['admin'], 'adm-group')) 
 			return true;
   },
-  remove: function () {
-		if (Roles.userIsInRole(this.userId, ['admin'], 'adm-group')) 
+  remove: function (userId) {
+		if (Roles.userIsInRole(userId, ['admin'], 'adm-group')) 
 			return true;
   }
-}); */
+});
