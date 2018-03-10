@@ -1,13 +1,13 @@
 Package.describe({
     name: 'ipstas:userfeedback',
-    version: '0.0.1',
+    version: '0.0.2',
     summary: 'Provides a userfeedback page',
     git: 'https://github.com/ipstas/meteor-userfeedback',
     documentation: 'README.md'
 });
 
 Package.onUse(function (api) {
-    api.versionsFrom('1.6.1');
+    api.versionsFrom('1.3');
 		
 		Npm.depends({
 			'simpl-schema': '1.1.0',

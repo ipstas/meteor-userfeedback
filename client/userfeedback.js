@@ -2,6 +2,7 @@ import SimpleSchema  from 'simpl-schema';
 import moment  from 'moment';
 import { AutoForm } from 'meteor/aldeed:autoform';
 
+import './userfeedback.html';
 import '../common/collection.js';
 
 import {Collections} from '../common/collection.js';
