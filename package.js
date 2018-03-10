@@ -7,7 +7,7 @@ Package.describe({
 });
 
 Package.onUse(function (api) {
-    api.versionsFrom('1.6');
+    api.versionsFrom('1.6.1');
 		
 		Npm.depends({
 			'simpl-schema': '1.1.0',
@@ -17,11 +17,11 @@ Package.onUse(function (api) {
     api.use([
 			'mongo',
 			'ecmascript',
-			'templating',
-			'blaze',
+			'templating@1.3.2',
+			'blaze@2.3.2',
 			'underscore',
 			'aldeed:autoform@6.0.0',
-			'peppelg:bootstrap-3-modal'
+			'peppelg:bootstrap-3-modal@1.0.4'
     ]);
 		
 		api.addFiles([
