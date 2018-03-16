@@ -1,6 +1,6 @@
 Package.describe({
     name: 'ipstas:userfeedback',
-    version: '0.0.2',
+    version: '0.0.3',
     summary: 'Provides a userfeedback page',
     git: 'https://github.com/ipstas/meteor-userfeedback',
     documentation: 'README.md'

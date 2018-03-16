@@ -97,7 +97,8 @@ Template._userListFeed.helpers({
 			list = {'comments.userId': Meteor.userId()};
 		else if (sorted == 'closed')
 			list = {status: 'closed'};
-		if (!list.status && sorted != 'owned' && !Roles.userIsInRole(Meteor.userId(), ['admin'], 'adm-group'))
+		let admin = Roles.userIsInRole(Meteor.userId(), ['admin'], 'adm-group') || Roles.userIsInRole(Meteor.userId(), ['admin']);
+		if (!list.status && sorted != 'owned' && !admin)
 			list.status = {$ne: 'submitted'};
 		var data = _userFeedbackCol.find(list,{sort: sort});
 		console.log('_userFeedbackCol:', list, sort, data.count(), data.fetch());
