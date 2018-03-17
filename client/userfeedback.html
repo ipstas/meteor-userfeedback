@@ -80,7 +80,7 @@
 					<a href="?request={{titleUniq}}"><div class="h3">{{title}}</div></a>
 					<div class="h4">by <b>{{user.username}}</b> {{createdAt}} ago</div>
 					<div class="font-larger">
-						{{#if isInRole 'admin' 'adm-group'}}
+						{{#if isInRole 'admin'}}
 							<div class="inline {{statusColor}}">
 								<div class="dropdown">
 									<button class="btn btn-default btn-sm dropdown-toggle xlStatus" type="button" id="xlStatusMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
