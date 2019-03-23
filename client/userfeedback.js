@@ -1,5 +1,6 @@
 import SimpleSchema  from 'simpl-schema';
 import moment  from 'moment';
+import 'bootstrap-tagsinput';
 import { AutoForm } from 'meteor/aldeed:autoform';
 
 import './userfeedback.html';
@@ -18,7 +19,7 @@ AutoForm.addHooks('_requestForm', hooksDefault);
 Template._userFeedback.onCreated( () => {
 	let t = Template.instance();
 	t.request =  new ReactiveVar(FlowRouter.getQueryParam('request'));
-	console.log('coll and sch:', _userFeedbackSchema, _userFeedbackCol);
+	if (Session.get('debug')) console.log('coll and sch:', _userFeedbackSchema, _userFeedbackCol);
 });
 Template._userFeedback.helpers({
 	request(){
@@ -29,6 +30,7 @@ Template._userFeedback.helpers({
 Template._userFeedback.events({
 	'click .xlSubmitFeature'(e,t){
 		//t.request.set('new');
+		//console.log('click .xlSubmitFeature', e, this);
 		FlowRouter.setQueryParams({request: 'new'});
 	},
 	'click .signIn'(e,t){
@@ -68,7 +70,7 @@ Template._userListFeed.onCreated( () => {
 			});
 		}
 		t.ready.set(sub.ready());
-		console.log('_userfeedback sub', sub, t.list.get(), t.sort.get(), t.limit.get());		
+		if (Session.get('debug')) console.log('_userfeedback sub', sub, t.list.get(), t.sort.get(), t.limit.get());		
 	})	
 	
 	t.autorun(function(){
@@ -80,28 +82,32 @@ Template._userListFeed.onRendered(()=> {
 
 });
 Template._userListFeed.helpers({
+	admin(){
+		let admin = Roles.userIsInRole(Meteor.userId(), ['admin'], 'admGroup') || Roles.userIsInRole(Meteor.userId(), ['admin']);
+		return admin;
+	},
 	xlSort(){
-		return FlowRouter.getQueryParam('sort');
+		return FlowRouter.getQueryParam('sort') || 'All';
 	},
 	record(){
 		var sorted = FlowRouter.getQueryParam('sort');
-		var sort = {createdAt: -1};
-		var list = {};
+		var sublist = {}, sort = {createdAt: -1};
 		if (sorted == 'recent')
 			sort = {'comments.createdAt': -1};
 		else if (sorted == 'popular')
 			sort = {votes: -1};
 		if (sorted == 'owned')
-			list.userId = Meteor.userId();
+			sublist.userId = Meteor.userId();
 		else if (sorted == 'voted')
-			list = {'comments.userId': Meteor.userId()};
+			sublist = {'comments.userId': Meteor.userId()};
 		else if (sorted == 'closed')
-			list = {status: 'closed'};
-		let admin = Roles.userIsInRole(Meteor.userId(), ['admin'], 'adm-group') || Roles.userIsInRole(Meteor.userId(), ['admin']);
-		if (!list.status && sorted != 'owned' && !admin)
-			list.status = {$ne: 'submitted'};
+			sublist = {status: 'closed'};
+		let admin = Roles.userIsInRole(Meteor.userId(), ['admin'], 'admGroup') || Roles.userIsInRole(Meteor.userId(), ['admin']);
+		if (!sublist.status && sorted != 'owned' && !admin)
+			sublist.status = {$ne: 'submitted'};
+		var list = {$or: [{userId: Meteor.userId()}, sublist]};
 		var data = _userFeedbackCol.find(list,{sort: sort});
-		console.log('_userFeedbackCol:', list, sort, data.count(), data.fetch());
+		if (Session.get('debug')) console.log('_userFeedbackCol:', list, sort, data.count(), data.fetch());
 		return data;
 	},
 	status(){
@@ -134,7 +140,7 @@ Template._userListFeed.helpers({
 		return new Date();
 	},
 	myvoted(){
-		console.log('voted', this.votes, _.findWhere(this.votes, Meteor.userId()));
+		if (Session.get('debug')) console.log('voted', this.votes, _.findWhere(this.votes, Meteor.userId()));
 		if (_.findWhere(this.votes, Meteor.userId()))
 			return 'xlVoted';
 	},
@@ -166,13 +172,13 @@ Template._userListFeed.helpers({
 		return t.hoverOver.get();
 	},
 	debug(){
-		console.log('debug', this);
+		if (Session.get('debug')) console.log('debug', this);
 	}
 
 });
 Template._userListFeed.events({
 	'click .xlSort' (e,t){
-		console.log('click xlSort', e, e.currentTarget.id);
+		if (Session.get('debug')) console.log('click xlSort', e, e.currentTarget.id);
 		var sort = e.currentTarget.id;
 		if (sort == 'all') sort = null;
 		FlowRouter.setQueryParams({sort:sort});
@@ -187,15 +193,16 @@ Template._userListFeed.events({
 		t.hoverOver.set();
 	},
 	'click .xlVote' (e,t){
-		//console.log('click xlVote', this);
-		Meteor.call('feedback.vote',{_id: this._id});
+		//.console.log('click xlVote', this);
+		if (Meteor.userId())
+			Meteor.call('feedback.vote',{_id: this._id});
 	},
 	'click .xlComment' (e,t){
-		console.log('click commentId', this);
+		if (Session.get('debug')) console.log('click commentId', this);
 		t.commentId.set(this._id);
 	},
 	'click .xlRecord' (e,t){
-		console.log('click recordId', this);
+		if (Session.get('debug')) console.log('click recordId', this);
 		t.recordId.set(this._id);
 	},
 	'click .xlDelete' (e,t){
@@ -203,19 +210,19 @@ Template._userListFeed.events({
 	},
 	'click .xlStatus' (e,t){
 		e.preventDefault();
-		console.log('click xlStatus', this, e);
+		if (Session.get('debug')) console.log('click xlStatus', this, e);
 		//Meteor.call('feedback.vote',{_id: this._id});
 	},
 	'click .dropdown-menu' (e,t){
 		e.preventDefault();
-		console.log('click xlStatusMenu', this, e.target.text);
+		if (Session.get('debug')) console.log('click xlStatusMenu', this, e.target.text);
 		Meteor.call('feedback.status',{status: e.target.text, _id: this._id});
 	},
 	'click .closeForm' (e,t){
 		e.preventDefault();	
 		t.recordId.set();
 		t.commentId.set();
-		console.log('closeForm', e,t,this);
+		if (Session.get('debug')) console.log('closeForm', e,t,this);
 	},
 	'click .hideModal'(){
 		Modal.hide();
@@ -254,7 +261,7 @@ Template._userListSide.onCreated( () => {
 			});
 		}
 		t.ready.set(sub.ready());
-		console.log('_userfeedback sub', sub, t.list.get(), t.sort.get(), t.limit.get());		
+		if (Session.get('debug')) console.log('_userfeedback sub', sub, t.list.get(), t.sort.get(), t.limit.get());		
 	})	
 	
 	t.autorun(function(){
@@ -274,7 +281,7 @@ Template._userListSide.helpers({
 		var sort = {voted: -1};
 		var list = {status: {$ne: 'submitted'}};
 		var data = _userFeedbackCol.find(list,{sort: sort, limit: 3});
-		console.log('_userFeedbackCol top3:', list, sort, data.count(), data.fetch());
+		if (Session.get('debug')) console.log('_userFeedbackCol top3:', list, sort, data.count(), data.fetch());
 		return data;
 	},	
 	recentCommented(){
@@ -282,7 +289,7 @@ Template._userListSide.helpers({
 		var sort = {'comments.createdAt': -1};
 		var list = {status: {$ne: 'submitted'}};
 		var data = _userFeedbackCol.find(list,{sort: sort, limit: 3});
-		console.log('_userFeedbackCol top3:', list, sort, data.count(), data.fetch());
+		if (Session.get('debug')) console.log('_userFeedbackCol top3:', list, sort, data.count(), data.fetch());
 		return data;
 	},	
 	recentCreated(){
@@ -290,7 +297,7 @@ Template._userListSide.helpers({
 		var sort = {createdAt: -1};
 		var list = {status: {$ne: 'submitted'}};
 		var data = _userFeedbackCol.find(list,{sort: sort, limit: 3});
-		console.log('_userFeedbackCol top3:', list, sort, data.count(), data.fetch());
+		if (Session.get('debug')) console.log('_userFeedbackCol top3:', list, sort, data.count(), data.fetch());
 		return data;
 	},
 	status(){
@@ -323,7 +330,7 @@ Template._userListSide.helpers({
 		return new Date();
 	},
 	myvoted(){
-		console.log('voted', this.votes, _.findWhere(this.votes, Meteor.userId()));
+		if (Session.get('debug')) console.log('voted', this.votes, _.findWhere(this.votes, Meteor.userId()));
 		if (_.findWhere(this.votes, Meteor.userId()))
 			return 'xlVoted';
 	},
@@ -355,13 +362,13 @@ Template._userListSide.helpers({
 		return t.hoverOver.get();
 	},
 	debug(){
-		console.log('debug', this);
+		if (Session.get('debug')) console.log('debug', this);
 	}
 
 });
 Template._userListSide.events({
 	'click .xlSort' (e,t){
-		console.log('click xlSort', e, e.currentTarget.id);
+		if (Session.get('debug')) console.log('click xlSort', e, e.currentTarget.id);
 		var sort = e.currentTarget.id;
 		if (sort == 'all') sort = null;
 		FlowRouter.setQueryParams({sort:sort});
@@ -380,11 +387,11 @@ Template._userListSide.events({
 		Meteor.call('feedback.vote',{_id: this._id});
 	},
 	'click .xlComment' (e,t){
-		console.log('click commentId', this);
+		if (Session.get('debug')) console.log('click commentId', this);
 		t.commentId.set(this._id);
 	},
 	'click .xlRecord' (e,t){
-		console.log('click recordId', this);
+		if (Session.get('debug')) console.log('click recordId', this);
 		t.recordId.set(this._id);
 	},
 	'click .xlDelete' (e,t){
@@ -392,19 +399,19 @@ Template._userListSide.events({
 	},
 	'click .xlStatus' (e,t){
 		e.preventDefault();
-		console.log('click xlStatus', this, e);
+		if (Session.get('debug')) console.log('click xlStatus', this, e);
 		//Meteor.call('feedback.vote',{_id: this._id});
 	},
 	'click .dropdown-menu' (e,t){
 		e.preventDefault();
-		console.log('click xlStatusMenu', this, e.target.text);
+		if (Session.get('debug')) console.log('click xlStatusMenu', this, e.target.text);
 		Meteor.call('feedback.status',{status: e.target.text, _id: this._id});
 	},
 	'click .closeForm' (e,t){
 		e.preventDefault();	
 		t.recordId.set();
 		t.commentId.set();
-		console.log('closeForm', e,t,this);
+		if (Session.get('debug')) console.log('closeForm', e,t,this);
 	},
 	'click .hideModal'(){
 		Modal.hide();
@@ -433,7 +440,7 @@ Template._userRequest.onCreated( () => {
 		});
 
 		t.ready.set(sub.ready());
-		console.log('_userfeedback sub', sub, t.list.get(), t.sort.get(), t.limit.get());		
+		if (Session.get('debug')) console.log('_userfeedback sub', sub, t.list.get(), t.sort.get(), t.limit.get());		
 	})	
 	
 	t.autorun(function(){
@@ -447,7 +454,7 @@ Template._userRequest.onRendered(()=> {
 Template._userRequest.helpers({
 	record(){
 		var data = _userFeedbackCol.findOne({titleUniq: FlowRouter.getQueryParam("request")});
-		console.log('_userFeedbackCol _userRequest:', {titleUniq: FlowRouter.getQueryParam("request")}, data);
+		if (Session.get('debug')) console.log('_userFeedbackCol _userRequest:', {titleUniq: FlowRouter.getQueryParam("request")}, data);
 		return data;
 	},
 	status(){
@@ -513,11 +520,11 @@ Template._userRequest.events({
 		FlowRouter.setQueryParams({request: null});
 	},
 	'click .xlSubmitComment' (e,t){
-		console.log('click commentId', this);
+		if (Session.get('debug')) console.log('click commentId', this);
 		t.commentId.set(this._id);
 	},		
 	'click .xlRecord' (e,t){
-		console.log('click recordId', this);
+		if (Session.get('debug')) console.log('click recordId', this);
 		t.recordId.set(this._id);
 	},			
 	'click .xlVote' (e,t){
@@ -531,7 +538,7 @@ Template._userRequest.events({
 		e.preventDefault();	
 		t.recordId.set();
 		t.commentId.set();
-		console.log('closeForm', e,t,this);
+		if (Session.get('debug')) console.log('closeForm', e,t,this);
 	},
 	'click .hideModal'(){
 		Modal.hide();
@@ -553,7 +560,7 @@ Template._addNewRequest.helpers({
 		return _userFeedbackCol;
 	},
 	debug(){
-		console.log('debug', this);
+		if (Session.get('debug')) console.log('debug', this);
 	}
 });
 Template._addNewRequest.events({

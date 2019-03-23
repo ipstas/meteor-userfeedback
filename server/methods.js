@@ -20,12 +20,12 @@ Meteor.methods({
 			_userFeedbackCol.update(params._id,{$set: {voted: voted + 1}, $addToSet:{votes: this.userId}});
 	},
 	'feedback.status'(params) {
-		let admin = Roles.userIsInRole(this.userId, ['admin'], 'adm-group') || Roles.userIsInRole(this.userId, ['admin']);
+		let admin = Roles.userIsInRole(this.userId, ['admin'], 'admGroup') || Roles.userIsInRole(this.userId, ['admin']);
 		if (!admin) return console.warn('non auth status change by', this.userId, params);
 		//if (params.status == 'submitted') params.status = null;
 		var updated = _userFeedbackCol.update(params._id,{$set: {status: params.status}});
 		//_userFeedbackCol.update(params._id,{$set: {status: 'selected'}});
-		console.log('feedback.status', updated, 'params:', params, 'coll:', _userFeedbackCol.findOne(params._id));
+		if (params.debug) console.log('feedback.status', updated, 'params:', params, 'coll:', _userFeedbackCol.findOne(params._id));
 	},
 
 });

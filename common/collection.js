@@ -143,15 +143,15 @@ export const _userFeedbackSchema = new SimpleSchema({
 _userFeedbackCol.allow({
   insert: function (userId, doc) {
 		console.log('inserting feedback', this.userId, doc);
-		if (Roles.userIsInRole(this.userId, ['admin'], 'adm-group') || (userId && doc.userId === userId))
+		if (Roles.userIsInRole(this.userId, ['admin'], 'admGroup') || (userId && doc.userId === userId))
 			return true;
   },
   update: function (userId) {
-		if (Roles.userIsInRole(userId, ['admin'], 'adm-group')) 
+		if (Roles.userIsInRole(userId, ['admin'], 'admGroup')) 
 			return true;
   },
   remove: function (userId) {
-		if (Roles.userIsInRole(userId, ['admin'], 'adm-group')) 
+		if (Roles.userIsInRole(userId, ['admin'], 'admGroup')) 
 			return true;
   }
 });

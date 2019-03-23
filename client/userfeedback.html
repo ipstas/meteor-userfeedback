@@ -1,10 +1,10 @@
 <template name="_userFeedback">
 	<div class="container-fluid text-left animated fadeIn xlUserFeedback">
 		<div class="row">
-			<div class="col-lg-offset-1 col-lg-10 col-md-offset-1 col-md-10 col-sm-offset-1 col-sm-10 col-xs-12">
+			<div class="col-lg-offset-1 offset-lg-1 col-lg-10 col-md-offset-1 offset-md-1 col-md-10 col-sm-offset-1 offset-sm-1 col-sm-10 col-12 col-xs-12">
 			
 				<div class="row banner margin-top-50">
-					<div class="col-xs-12">
+					<div class="col-xs-12 col-12">
 						<h1 class="text-center">Feature Requests</h1>
 						<h2 class="text-center">
 							Suggest the next new feature you want to add.<br>
@@ -15,7 +15,7 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-lg-offset-1 col-lg-6 col-md-offset-1 col-md-6 col-sm-offset-1 col-sm-7 col-xs-12">
+			<div class="col-lg-offset-1 offset-lg-1 col-lg-6 col-md-offset-1 offset-md-1 col-md-6 col-sm-offset-1 offset-sm-1 col-sm-7 col-12 col-xs-12">
 				{{#if $eq request 'new'}}
 					{{>_addNewRequest}}
 				{{else}}
@@ -26,7 +26,7 @@
 					{{/if}}
 				{{/if}}
 			</div>
-			<div class="col-lg-4 col-md-4 col-sm-3 col-xs-12">
+			<div class="col-lg-4 col-md-4 col-sm-3 col-12 col-xs-12">
 				{{> _userListSide}}
 			</div>
 		</div>
@@ -36,26 +36,19 @@
 <template name="_userListFeed">
 
 	<div class="row">
-		<div class="col-xs-12 text-center">
+		<div class="col-12 col-xs-12 text-center">
 			<div class="text-center">
 			<ul class="nav nav-tabs">
-				<li id="all" class="xlSort {{#unless xlSort}} active {{/unless}}">
-					<a href="javascript:" data-sort="popular">All</a>
-				</li>
-				<li id="popular" class="xlSort {{#if $eq xlSort 'popular'}} active {{/if}}">
-					<a href="javascript:" data-sort="popular">Top Requests</a>
-				</li>
-				<li id="recent" class="xlSort {{#if $eq xlSort 'recent'}} active {{/if}}">
-					<a href="javascript:" data-sort="recent">Recently commented</a>
-				</li>
-				<li id="owned" class="xlSort {{#if $eq xlSort 'owned'}} active {{/if}}">
-					<a href="javascript:" data-sort="owned">My requests</a>
-				</li>
-				<li id="voted" class="xlSort {{#if $eq xlSort 'voted'}} active {{/if}}">
-					<a href="javascript:" data-sort="voted">My Favorites</a>
-				</li>
-				<li id="closed" class="xlSort {{#if $eq xlSort 'closed'}} active {{/if}}">
-					<a href="javascript:" data-sort="closed">Implemented</a>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">{{xlSort}}</a>
+					<div class="dropdown-menu">
+						<a id="all" class="dropdown-item xlSort" href="javascript:" data-sort="popular">All</a>
+						<a id="popular" class="dropdown-item xlSort" href="javascript:" data-sort="popular">Top Requests</a>
+						<a id="recent" class="dropdown-item xlSort" href="javascript:" data-sort="recent">Recently commented</a>
+						<a id="owned" class="dropdown-item xlSort" href="javascript:" data-sort="owned">My requests</a>
+						<a id="voted" class="dropdown-item xlSort" href="javascript:" data-sort="voted">My Favorites</a>
+						<a id="closed" class="dropdown-item xlSort" href="javascript:" data-sort="closed">Implemented</a>
+					</div>
 				</li>
 			</ul>
 			</div>
@@ -66,7 +59,7 @@
 	{{#each record}}
 		<div class="row text-left">
 			{{#unless $eq recordId _id}}
-				<div class="col-xs-2 fontlarge">
+				<div class="col-2 col-xs-2 fontlarge">
 					<div class="h3"> </div>
 					<div class="pointer xlVote feature-stats__vote-count {{myvoted}}">
 						{{#unless $eq hoverOver _id}}
@@ -76,14 +69,14 @@
 						{{/unless}}
 					</div>
 				</div>
-				<div class="col-xs-10">
+				<div class="col-10 col-xs-10">
 					<a href="?request={{titleUniq}}"><div class="h3">{{title}}</div></a>
 					<div class="h4">by <b>{{user.username}}</b> {{createdAt}} ago</div>
 					<div class="font-larger">
-						{{#if isInRole 'admin'}}
+						{{#if admin}}
 							<div class="inline {{statusColor}}">
 								<div class="dropdown">
-									<button class="btn btn-default btn-sm dropdown-toggle xlStatus" type="button" id="xlStatusMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+									<button class="btn btn-success btn-sm dropdown-toggle xlStatus" type="button" id="xlStatusMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 										{{status}}
 										<span class="caret"></span>
 									</button>
@@ -99,10 +92,10 @@
 								<button class="btn btn-danger btn-sm xlDelete">Delete</button>
 							</div>
 						{{else}}
-							<span class="label label-default {{statusColor}}">{{status}}</span>
+							<span class="label label-default badge badge-info {{statusColor}}">{{status}}</span>
 						{{/if}}
 						<a href="?request={{titleUniq}}">
-							<span class="xlSubmitComment label label-default {{likeColor}}">
+							<span class="xlSubmitComment label label-default label-default badge badge-info {{likeColor}}">
 								<i class="fa fa-comments" aria-hidden="true"></i> {{commentsCount}}
 							</span>
 						</a>
@@ -120,14 +113,14 @@
 <template name="_userListSide">
 	<div id="_userListSide" class="row ">
 
-		<div class="col-xs-12 whitesmoke padding-bottom-20">
+		<div class="col-12 col-xs-12 whitesmoke padding-bottom-20">
 			<h2 class="sideblock__title text-center">Got Idea?</h2>
 			<div class="visible-xs visible-sm margin-top-20"></div>
 			<div class="xlSubmitFeature pointer button btn-lg btn-info">Tell to the world</div>
 		</div>
 
 		<div class="margin-top-40 col-xs-12"></div>
-		<div class="sideblock col-xs-12 col-sm-12 col-md-12 xltop">
+		<div class="sideblock col-12 col-xs-12 col-sm-12 col-md-12 xltop">
 			<span class="sideblock__icon icon-trophy"></span>
 			<div class="h3 sideblock__title text-center">TOP 3 requests</div>
 			{{#each top3}}
@@ -145,7 +138,7 @@
 			{{/each}}
 		</div>
 
-		<div class="sideblock col-xs-12 col-sm-12 col-md-12 xlrecentcomm">
+		<div class="sideblock col-12 col-xs-12 col-sm-12 col-md-12 xlrecentcomm">
 			<span class="sideblock__icon icon-comment"></span>
 			<div class="h3 sideblock__title text-center">Recently commented</div>
 			{{#each recentCommented}}
@@ -164,7 +157,7 @@
 		</div>
 
 
-		<div class="sideblock col-xs-12 col-sm-12 col-md-12 xlrecentcrtd">
+		<div class="sideblock col-12 col-xs-12 col-sm-12 col-md-12 xlrecentcrtd">
 			<span class="sideblock__icon icon-clock"></span>
 			<div class="h3 sideblock__title text-center">Recently created</div>
 			{{#each recentCreated}}
@@ -188,17 +181,17 @@
 <template name="_userRequest">
 
 	<div class="row banner ">
-		<div class="col-md-offset-1 col-md-11 xs-12">
+		<div class="col-md-offset-1 offset-md-1 col-md-11 col-12 xs-12">
 		
 			<div class="row banner ">
-				<div class="col-xs-12">
+				<div class="col-12 col-xs-12">
 					<a href='#' class="backToFeedback"><h4 class="text-left"><i class="fa fa-chevron-circle-left" aria-hidden="true"></i> Back to the list</h4></a>
 				</div>
 			</div>
 				
 			{{#with record}}
 				<div class="row banner">
-					<div class="col-xs-12">
+					<div class="col-12 col-xs-12">
 						<div class="h2 text-left">{{title}}</div>
 					</div>
 				</div>
@@ -206,21 +199,21 @@
 				{{debug}}
 
 				<div class="row text-left">
-					<div class="col-xs-12 h4">by <span class="xlAuthor">{{user.username}}</span> {{createdAt}} ago</div>
+					<div class="col-12 col-xs-12 h4">by <span class="xlAuthor">{{user.username}}</span> {{createdAt}} ago</div>
 
-					<div class="col-xs-12">
+					<div class="col-12 col-xs-12">
 						<div class="font-larger">
-							<span class="label label-default {{statusColor}}">{{status}}</span> 
-							<span class="xlVote label label-default {{likeColor}}">
+							<span class="label label-default label-default badge badge-info {{statusColor}}">{{status}}</span> 
+							<span class="pointer xlVote label label-default label-default badge badge-info  {{likeColor}}">
 								<i class="fa fa-thumbs-up" aria-hidden="true"></i> {{voted}}
 							</span> 
 							<span> </span> 
-							<span class="xlSubmitComment label label-default {{likeColor}}">
+							<span class="xlSubmitComment label label-default label-default badge badge-info  {{likeColor}}">
 								<i class="fa fa-comments" aria-hidden="true"></i> {{commentsCount}}
 							</span> 
 						</div>
 					</div>
-					<div class="col-xs-12 ">
+					<div class="col-12 col-xs-12 ">
 						<div class="xlRequestText">
 							{{text}}
 						</div>
@@ -230,13 +223,13 @@
 				<div class="row text-left">
 
 					{{#unless $eq commentId _id}}
-						<div class="pointer col-xs-4">
+						<div class="pointer col-4 col-xs-4">
 							<div class="h3"> </div>
 							<div class="xlSubmitComment pointer button btn btn-info">Leave a comment</div>
 						</div>
 					{{else}}
 					
-						<div class="col-xs-12">
+						<div class="col-12 col-xs-12">
 
 							{{#autoForm id="editRequestForm" template="bootstrap3" validation="none" doc=this scope="comments" schema=schema collection=collection type="method-update" meteormethod="feedback.comment" }}
 								{{> afQuickField name="comments.$.comment" type="textarea"}}
@@ -252,10 +245,10 @@
 				
 				{{#each comments}}
 					<div class="row xlComment">
-						<div class="col-xs-12 xlCommentAuthor">
+						<div class="col-12 col-xs-12 xlCommentAuthor">
 							<span class="xlAuthor">{{user.username}}</span> {{createdAt}} ago
 						</div>
-						<div class="col-xs-12 xlCommentText">
+						<div class="col-12 col-xs-12 xlCommentText">
 							{{comment}}
 						</div>
 					</div>
@@ -270,9 +263,9 @@
 <template name="_addNewRequest">
 
 	<div class="row   text-center">
-		<div class="col-sm-offset-2 col-sm-8 col-xs-12">
+		<div class="col-sm-offset-2 offset-sm-2 col-sm-8 col-12 col-xs-12">
 			<div class="row   text-center">
-				<div class="col-xs-12">
+				<div class="col-12 col-xs-12">
 					<h1 class="text-center">Add a Request</h1>
 				</div>
 
@@ -293,13 +286,13 @@
 <template name="_addNewComment">
 
 	<div class="row banner margin-top-50 text-center">
-		<div class="col-sm-offset-2 col-sm-8 col-xs-12">
+		<div class="col-sm-offset-2 offset-sm-2 col-sm-8 col-12 col-xs-12">
 			<div class="row banner margin-top-50 text-center">
-				<div class="col-xs-12">
+				<div class="col-12 col-xs-12">
 					<h1 class="text-center">Add a Request</h1>
 				</div>
 
-				<div class="col-xs-12 ">	
+				<div class="col-12 col-xs-12 ">	
 
 <!-- 					{{#autoForm id="requestForm" template="bootstrap3" doc=doc schema=schema collection=collection type="insert" }}
 						{{debug}}
