@@ -1,5 +1,6 @@
 import '../common/collection.js';
 import {_userFeedbackCol} from '../common/collection.js';
+
 Meteor.methods({
 	'feedback.comment'(params) {
 		if (!params) return console.warn('empty comment');

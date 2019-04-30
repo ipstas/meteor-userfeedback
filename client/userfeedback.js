@@ -1,20 +1,12 @@
 import SimpleSchema  from 'simpl-schema';
-import moment  from 'moment';
-import 'bootstrap-tagsinput';
 import { AutoForm } from 'meteor/aldeed:autoform';
-
-import './userfeedback.html';
-import '../common/collection.js';
-
-import {Collections} from '../common/collection.js';
-import {Schemas} from '../common/collection.js';
 import {_userFeedbackSchema} from '../common/collection.js';
 import {_userFeedbackCol} from '../common/collection.js';
 import {hooksDefault} from '../common/hooks.js';
-
 window._userFeedbackCol = _userFeedbackCol;
-
 AutoForm.addHooks('_requestForm', hooksDefault);
+
+import './userfeedback.html';
 
 Template._userFeedback.onCreated( () => {
 	let t = Template.instance();
@@ -566,3 +558,4 @@ Template._addNewRequest.helpers({
 Template._addNewRequest.events({
 
 });
+
